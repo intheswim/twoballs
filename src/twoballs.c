@@ -100,7 +100,7 @@ void setSizes(const int width, const int height, struct appParams * params)
 	{
 		FLOOR_LEVEL = (height / 2) + (BALL_SIZE / 2); 
 	}
-	else // bottom 
+	else /* bottom */ 
 	{
 		FLOOR_LEVEL = (height) - (BALL_SIZE) - 10;
 	}
@@ -123,7 +123,7 @@ static void next ()
 
    	if (ypos1 > FLOOR_LEVEL && yspeed1 < 0)
 	{
-		// ball bounce from the floor
+		/* ball bounce from the floor */
 		yspeed1 += GRAVITATION;
 		yspeed1 = -BOUNCE_SLOWDOWN * yspeed1;
         xspeed1 = xspeed1 * 0.99;
@@ -161,7 +161,7 @@ static void next ()
 
    	if (ypos2 > FLOOR_LEVEL && yspeed2 < 0)
 	{
-		// ball bounce from the floor
+		/* ball bounce from the floor */
 		yspeed2 += GRAVITATION;
 		yspeed2 = -BOUNCE_SLOWDOWN * yspeed2;
         xspeed2 = xspeed2 * 0.99;
@@ -206,10 +206,10 @@ static void next ()
    	if (xpos2_max > winW)
     	xpos2_max = winW;  
 	
-	// this is actually squared distance
+	/* this is actually squared distance */
    	dist = (xpos1_max - xpos2_max) * (xpos1_max - xpos2_max) + (ypos1_max - ypos2_max) * (ypos1_max - ypos2_max) ;
 
-   	if ((dist < last_dist && dist < (BALL_SIZE + 3) * (BALL_SIZE + 3))) // || (last_dist > 170 && dist > 170 && BallsCollapse()==1))
+   	if ((dist < last_dist && dist < (BALL_SIZE + 3) * (BALL_SIZE + 3))) 
 	{
 		if (dist < (BALL_SIZE + 1) * (BALL_SIZE + 1))
 		{
@@ -247,7 +247,7 @@ static void next ()
 	objBall2.top = ypos2_max;
 }
 
-//////////////////////////////////////////////////////////////////////////////
+/*-----------------------------------------------------------------------*/
 
 void game_init (struct appParams * params)
 {
