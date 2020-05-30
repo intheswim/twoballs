@@ -2,7 +2,7 @@
 
 *******************************************************************************************
 
-To compile:
+To compile first install lib11-dev and libxpm or libpng:
 
 ### sudo apt-get update -y
 ### sudo apt-get install -y libx11-dev
@@ -22,9 +22,15 @@ In this case to build run:
 
 *******************************************************************************************
 
+To build and install on Ubuntu:
+
+### sudo make install use_xmp=1
+
+*******************************************************************************************
+
 To run as a standalone app:
 
-### ./twoballs --debug
+### ./twoballs -window
 
 To intall as xscreensaver, use xpm option to build (libpng requires reading .png files 
 from local dir - see file_to_pixmap() - so unless you also want to intstall them along 

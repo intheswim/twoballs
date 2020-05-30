@@ -38,24 +38,77 @@ struct gameStruct
     int width, height, depth;
 } ;
 
-static int parse_arguments(int argc, char *argv[]) 
+static int parse_arguments(int argc, char *argv[], struct appParams * params) 
 {
+	int ret = FALSE;
+	int floor_level_idx = -1;
+	int bounce_slowdown_idx = -1;
+	int gravity_idx = -1;
 	int idx;
 
 	progname = strdup (argv[0]);
 
-	for (idx = 1; idx < argc; idx++) {
-		if (strcasecmp(argv[idx], "--debug") == 0) {
-			return TRUE;
+	for (idx = 1; idx < argc; idx++) 
+	{
+		if (strcasecmp(argv[idx], "-window") == 0) 
+		{
+			ret = TRUE;
+		}
+		if (strcasecmp(argv[idx], "-floor") == 0)
+		{
+			floor_level_idx = idx + 1;
+		}
+		if (strcasecmp(argv[idx], "-bounce") == 0)
+		{
+			bounce_slowdown_idx = idx + 1;
+		}
+
+		if (strcasecmp(argv[idx], "-gravity") == 0)
+		{
+			gravity_idx = idx + 1;
+		}
+
+		if (idx == floor_level_idx)
+		{
+			if (strcmp (argv[idx], "goldenratio") == 0)
+			{
+				params->floorPos = posGoldenRatio;
+			}
+			else if (strcmp (argv[idx], "midscreen") == 0)
+			{
+				params->floorPos = posMidscreen;
+			}
+		}
+
+		if (idx == bounce_slowdown_idx)
+		{
+			int temp = atoi(argv[idx]);
+
+			if (temp >= 85 && temp <= 99)
+				params->bounceSlowdown = 0.01 * temp;
+		}
+
+		if (idx == gravity_idx)
+		{
+			int temp = atoi(argv[idx]);
+
+			if (temp >= 50 && temp <= 100)
+				params->gravity = 0.01 * temp;
 		}
 	}
 
-	return FALSE;
+	return (ret);
 }
 
 int main(int argc, char *argv[]) 
 {
-	int debug = parse_arguments(argc, argv);
+	struct appParams params;
+
+	params.floorPos = posBottom;
+	params.bounceSlowdown = 0.95;
+	params.gravity = 0.7;
+
+	int debug = parse_arguments(argc, argv, &params);
 
 	// Create our display
 	Display *dpy = XOpenDisplay(getenv("DISPLAY"));
@@ -78,7 +131,7 @@ int main(int argc, char *argv[])
 		if (root_window_id == 0)
     	{
 		    // root = DefaultRootWindow(dpy);
-      	    printf ("usage as standalone app: %s --debug\n", argv[0]);
+      	    printf ("usage as standalone app: %s -window\n", argv[0]);
 			free (progname);
       		return EXIT_FAILURE;
     	}
@@ -163,9 +216,9 @@ int main(int argc, char *argv[])
 
 	srand(time(NULL));
 
-	game_init();
+	game_init( &params );
 
-	setSizes (wa.width, wa.height);
+	setSizes (wa.width, wa.height, &params);
 
 	// this is to terminate nicely:
 	Atom wmDeleteMessage = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
@@ -196,7 +249,7 @@ int main(int argc, char *argv[])
     				double_buffer = XCreatePixmap(dpy, root, gs.width, gs.height,
 							gs.depth);
 
-					setSizes (gs.width, gs.height);
+					setSizes (gs.width, gs.height, &params);
           
             		continue;
           		}

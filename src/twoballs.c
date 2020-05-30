@@ -29,6 +29,8 @@ struct BallStruct
 };
 
 static int FLOOR_LEVEL = 300;
+static float BOUNCE_SLOWDOWN = 0.9;
+static float GRAVITATION = 0.470;
 
 struct BallStruct objBall1, objBall2;
 
@@ -85,12 +87,23 @@ static double GetCoef (void)
    	return 1.0;
 }
 
-void setSizes(const int width, const int height) 
+void setSizes(const int width, const int height, struct appParams * params) 
 {
   	winW = width - BALL_SIZE - 1;
   	winH = height - 16;
 
-  	FLOOR_LEVEL = (height / GOLDEN_RATIO) + (BALL_SIZE / 2);
+	if (params->floorPos == posGoldenRatio)
+	{
+  		FLOOR_LEVEL = (height / GOLDEN_RATIO) + (BALL_SIZE / 2);
+	}
+	else if (params->floorPos == posMidscreen)
+	{
+		FLOOR_LEVEL = (height / 2) + (BALL_SIZE / 2); 
+	}
+	else // bottom 
+	{
+		FLOOR_LEVEL = (height) - (BALL_SIZE) - 10;
+	}
 
   	if (FLOOR_LEVEL < DROP_HEIGHT + BALL_SIZE)
   	{
@@ -106,13 +119,13 @@ static void next ()
    	if (xpos1 > winW && xspeed1 > 0) xspeed1 = -xspeed1;
    	if (xpos1 < 0 && xspeed1 < 0) xspeed1 = -xspeed1;
 
-   	yspeed1 -= 1.0; // gravitation
+   	yspeed1 -= GRAVITATION;
 
    	if (ypos1 > FLOOR_LEVEL && yspeed1 < 0)
 	{
 		// ball bounce from the floor
-		yspeed1 += 1;
-		yspeed1 = -0.9 * yspeed1;
+		yspeed1 += GRAVITATION;
+		yspeed1 = -BOUNCE_SLOWDOWN * yspeed1;
         xspeed1 = xspeed1 * 0.99;
 
 	   	if ( fabs(yspeed1) < 0.01 && fabs(xspeed1) < 0.2)
@@ -144,13 +157,13 @@ static void next ()
    	if (xpos2 > winW && xspeed2 > 0) xspeed2 = -xspeed2;
    	if (xpos2 < 0 && xspeed2 < 0) xspeed2 = -xspeed2;
 
-   	yspeed2 -= 1.0;  // gravitation
+   	yspeed2 -= GRAVITATION;
 
    	if (ypos2 > FLOOR_LEVEL && yspeed2 < 0)
 	{
 		// ball bounce from the floor
-		yspeed2 += 1;
-		yspeed2 = -0.9 * yspeed2;
+		yspeed2 += GRAVITATION;
+		yspeed2 = -BOUNCE_SLOWDOWN * yspeed2;
         xspeed2 = xspeed2 * 0.99;
 
 	   	if (fabs(yspeed2) < 0.001 && fabs(xspeed2) < 0.2 )
@@ -236,8 +249,11 @@ static void next ()
 
 //////////////////////////////////////////////////////////////////////////////
 
-void game_init()
+void game_init (struct appParams * params)
 {
+	BOUNCE_SLOWDOWN = params->bounceSlowdown;
+	GRAVITATION = params->gravity;
+
 	objBall1.pos.x = 0;
 	objBall1.pos.y = DROP_HEIGHT;
 	objBall1.speed.x = floor(math_random() * 10 ) + 2;

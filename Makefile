@@ -13,6 +13,9 @@ else
 	CLIBS = -lX11 -lm -lXpm
 endif
 
+INSTALLDIR = /usr/lib/xscreensaver
+CONFIGDIR = /usr/share/xscreensaver/config
+
 # action:
 #	echo argument is $(argument)
 
@@ -24,6 +27,12 @@ twoballs : $(srcdir)/twoballs.c $(srcdir)/twoballs.h
 
 ximage_loader : $(srcdir)/ximage-loader.c $(srcdir)/ximage-loader.h
 		$(CC) $(CFLAGS) -c $(srcdir)/ximage-loader.c
+
+install: all copy_files
+
+copy_files : 
+	cp -f ./twoballs $(INSTALLDIR)
+	cp -f ./twoballs.xml $(CONFIGDIR)
 
 .PHONY: clean
 

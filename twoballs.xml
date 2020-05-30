@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<screensaver name="twoballs" _label="Twoballs">
+
+  <command arg="-root"/>
+
+  <vgroup>
+
+    <number id="bounce" type="slider" arg="-bounce %"
+             _label="Bounce factor" _low-label="Low" _high-label="High"
+             low="85" high="99" default="95" />
+
+    <number id="gravity" type="slider" arg="-gravity %"
+             _label="Gravity" _low-label="Low" _high-label="High"
+             low="50" high="100" default="70" />
+
+    <select id="floor">
+            <option id="bottom"    _label="Screen Bottom"/>
+            <option id="goldenratio"  _label="Golden Ratio" arg-set="-floor goldenratio"/>
+            <option id="midscreen"    _label="Mid Screen" arg-set="-floor midscreen"/>
+     </select>
+  </vgroup>
+
+  <xscreensaver-updater />
+
+  <_description>
+
+Two balls bouncing against one another.
+
+Written by Yuriy Yakimenko; 2020.
+
+  </_description>
+</screensaver>
