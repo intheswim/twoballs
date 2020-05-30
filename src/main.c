@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <assert.h>
 #include <sys/time.h>
 #include <time.h>
@@ -30,13 +31,20 @@
 #define LTBLUE 	0xA090FF
 #define LTRED  	0xFF80A0
 
-char * progname = NULL; // needed for ximage-loader.c to compile. Initialize with argv[0].
+char * progname = NULL; /* needed for ximage-loader.c to compile. Initialize with argv[0]. */
 
 struct gameStruct
 {
     int ball_w, ball_h;
     int width, height, depth;
 } ;
+
+char *m_strdup(const char *src) {
+    char *dst = malloc(strlen (src) + 1);  
+    if (dst == NULL) return NULL;          
+    strcpy(dst, src);                      
+    return dst;                            
+}
 
 static int parse_arguments(int argc, char *argv[], struct appParams * params) 
 {
@@ -46,7 +54,7 @@ static int parse_arguments(int argc, char *argv[], struct appParams * params)
 	int gravity_idx = -1;
 	int idx;
 
-	progname = strdup (argv[0]);
+	progname = m_strdup (argv[0]);
 
 	for (idx = 1; idx < argc; idx++) 
 	{
@@ -110,7 +118,7 @@ int main(int argc, char *argv[])
 
 	int debug = parse_arguments(argc, argv, &params);
 
-	// Create our display
+	/* Create our display */
 	Display *dpy = XOpenDisplay(getenv("DISPLAY"));
 
 	char *xwin = getenv ("XSCREENSAVER_WINDOW");
@@ -122,15 +130,13 @@ int main(int argc, char *argv[])
     	root_window_id = strtol (xwin, NULL, 0);
   	}
 
-	// Get the root window
+	/* Get the root window */
 	Window root;
 	if (debug == FALSE) 
 	{
-		// Get the root window
-		// root = DefaultRootWindow(dpy);
+		/* Get the root window */
 		if (root_window_id == 0)
     	{
-		    // root = DefaultRootWindow(dpy);
       	    printf ("usage as standalone app: %s -window\n", argv[0]);
 			free (progname);
       		return EXIT_FAILURE;
@@ -142,7 +148,7 @@ int main(int argc, char *argv[])
 	} 
 	else 
 	{
-		// Let's create our own window.
+		/* Let's create our own window. */
 		int screen = DefaultScreen(dpy);
 		root = XCreateSimpleWindow(dpy, RootWindow(dpy, screen), 24, 48, 860,
 				640, 1, BlackPixel(dpy, screen), BlackPixel(dpy, screen));
@@ -154,7 +160,7 @@ int main(int argc, char *argv[])
 
 	XSelectInput (dpy, root, ExposureMask | StructureNotifyMask);
 
-	// Get the window attributes
+	/* Get the window attributes */
 	XWindowAttributes wa;
 	XGetWindowAttributes(dpy, root, &wa);
 
@@ -164,7 +170,7 @@ int main(int argc, char *argv[])
     gs.height = wa.height;
     gs.depth = wa.depth;
 
-	// Create the buffer
+	/* Create the buffer */
 	Pixmap double_buffer = XCreatePixmap(dpy, root, wa.width, wa.height,
 			wa.depth);
     
@@ -182,7 +188,7 @@ int main(int argc, char *argv[])
                               &ball_w, &ball_h,
                               NULL);
 
-#else // no LIBPNG
+#else /* no LIBPNG */
     Pixmap blue_ball, red_ball;
 
     XpmAttributes attrs;
@@ -201,7 +207,7 @@ int main(int argc, char *argv[])
     XpmCreatePixmapFromData (dpy, root, r2_data, &red_ball, NULL, &attrs) ;
     
     ball_w = attrs.width, ball_h = attrs.height;
-#endif  // HAVE_LIBPNG   
+#endif  /* HAVE_LIBPNG */
 
     assert(ball_h == ball_w);
     assert(ball_w == BALL_SIZE);
@@ -209,9 +215,9 @@ int main(int argc, char *argv[])
     gs.ball_h = ball_h;
     gs.ball_w = ball_w;
 
-#endif // GRAPHIC_BALLS    
+#endif /* GRAPHIC_BALLS */
 
-	// And new create our graphics context to draw on
+	/* And new create our graphics context to draw on */
 	GC gc = XCreateGC(dpy, root, 0, NULL);
 
 	srand(time(NULL));
@@ -220,7 +226,7 @@ int main(int argc, char *argv[])
 
 	setSizes (wa.width, wa.height, &params);
 
-	// this is to terminate nicely:
+	/* this is to terminate nicely:  */
 	Atom wmDeleteMessage = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
     XSetWMProtocols(dpy, root, &wmDeleteMessage, 1);
 
@@ -230,15 +236,15 @@ int main(int argc, char *argv[])
 	{
 		XEvent event;
 		if (XCheckWindowEvent(dpy, root, StructureNotifyMask, &event) ||
-		    XCheckTypedWindowEvent (dpy, root, ClientMessage, &event)) // needed to catch ClientMessage
+		    XCheckTypedWindowEvent (dpy, root, ClientMessage, &event)) /* needed to catch ClientMessage */
 		{
 			if (event.type == ConfigureNotify) 
         	{
           		XConfigureEvent xce = event.xconfigure;
 
-		        // This event type is generated for a variety of
-          		// happenings, so check whether the window has been
-          		// resized.
+		        /* This event type is generated for a variety of
+          		   happenings, so check whether the window has been
+          		   resized. */
 
           		if (xce.width != gs.width || xce.height != gs.height) 
           		{
@@ -263,16 +269,17 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		// Clear the pixmap used for double buffering
+		/* Clear the pixmap used for double buffering */
 		XSetBackground(dpy, gc, BLACK);
 		XSetForeground(dpy, gc, BLACK);
 		XFillRectangle(dpy, double_buffer, gc, 0, 0, gs.width, gs.height);
 
-		// Move the points around
+		/* Move the points around */
 
 		game_cycle (&ball_a, &ball_b);
 
-		// draw two balls
+		/* draw two balls */
+
 #ifndef USE_GRAPHIC_BALLS        
 		XSetForeground(dpy, gc, LTBLUE);
 		XSetBackground(dpy, gc, LTBLUE);
@@ -303,7 +310,8 @@ int main(int argc, char *argv[])
 		usleep(15000);
 	}
 
-	// cleanup
+	/* cleanup */
+
 #ifdef USE_GRAPHIC_BALLS
     XFreePixmap (dpy, blue_ball);
     XFreePixmap (dpy, red_ball);

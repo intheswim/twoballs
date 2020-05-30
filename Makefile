@@ -4,7 +4,7 @@ srcdir=src
 
 #ifndef use_xpm
 ifneq ($(use_xpm),1)
-	CFLAGS = -std=gnu99 -Wall -O2 -DHAVE_LIBPNG
+	CFLAGS = -ansi -Wall -O2 -DHAVE_LIBPNG
 	CLIBS = -lX11 -lm -lpng
 	IMG_LOADER = ximage_loader
 	IMG_LOADER_OUT = ximage-loader.o
