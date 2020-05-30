@@ -9,7 +9,7 @@ ifneq ($(use_xpm),1)
 	IMG_LOADER = ximage_loader
 	IMG_LOADER_OUT = ximage-loader.o
 else
-	CFLAGS = -std=gnu99 -Wall -O2
+	CFLAGS = -ansi -Wall -O2
 	CLIBS = -lX11 -lm -lXpm
 endif
 
