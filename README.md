@@ -1,47 +1,47 @@
 ** This program is based on a small JavaScript written around 2004. **
 
-*******************************************************************************************
+===
 
 To compile, first install libx11-dev and libxpm or libpng:
 
-### sudo apt-get update -y
-### sudo apt-get install -y libx11-dev
+`sudo apt-get update -y`
+`sudo apt-get install -y libx11-dev`
 
 To install libpng (to show balls in good quality):
 
-### sudo apt-get install -y libpng-dev
+`sudo apt-get install -y libpng-dev`
 
 To install xpm (a library that can use .xmp files to load them into Pixmaps, see
   XpmCreatePixmapFromData) use:
 
-### sudo apt-get install -y libxpm-dev
+`sudo apt-get install -y libxpm-dev`
 
 In this case to build run: 
 
-### make use_xpm=1
+`make use_xpm=1`
 
-*******************************************************************************************
+---
 
 To build & install on Ubuntu:
 
-### sudo make install use_xmp=1
+`sudo make install use_xmp=1`
 
 *******************************************************************************************
 
 To run as a standalone app:
 
-### ./twoballs -window
+`./twoballs -window`
 
-To manually intall as xscreensaver, use xpm option to build (libpng requires reading .png files from local dir - see file_to_pixmap() - so unless you also want to intstall them along 
+To manually install as xscreensaver, use xpm option to build (libpng requires reading .png files from local dir - see file_to_pixmap() - so unless you also want to intstall them along 
 with the app or use global path, it is not going to work).
 
-### make use_xpm=1
+`make use_xpm=1`
 
-### sudo cp ./twoballs /usr/lib/xscreensaver
+`sudo cp ./twoballs /usr/lib/xscreensaver`
 
 Don't forget about config file (this way you can control parameters with xscreensaver):
 
-### sudo cp ./twoballs.xml /usr/share/xscreensaver/config
+`sudo cp ./twoballs.xml /usr/share/xscreensaver/config`
 
 *******************************************************************************************
 
