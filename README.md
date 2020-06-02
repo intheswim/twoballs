@@ -1,6 +1,6 @@
 ** This program is based on a small JavaScript written around 2004. **
 
-===
+---
 
 To compile, first install libx11-dev and libxpm or libpng:
 
@@ -26,7 +26,7 @@ To build & install on Ubuntu:
 
 `sudo make install use_xmp=1`
 
-*******************************************************************************************
+---
 
 To run as a standalone app:
 
@@ -43,7 +43,7 @@ Don't forget about config file (this way you can control parameters with xscreen
 
 `sudo cp ./twoballs.xml /usr/share/xscreensaver/config`
 
-*******************************************************************************************
+---
 
 Some ideas for improvement:
 
